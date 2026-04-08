@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Duel</title>
+    
+    <!-- أيقونة التبويب - ضع رابط صورتك هنا -->
+    <link rel="icon" type="image/png" href="StudyDuel.png">
+    <link rel="shortcut icon" href="StudyDuel.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0e27;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<iframe id="studyFrame" src="https://studyduel.lovable.app/chat"></iframe>
+
+<script>
+    const iframe = document.getElementById('studyFrame');
+    
+    iframe.addEventListener('load', function() {
+        try {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            hideLovableInDocument(iframeDoc);
+        } catch(e) {
+            console.log('لا يمكن الوصول للإطار بسبب سياسة CORS');
+        }
+    });
+    
+    function hideLovableInDocument(doc) {
+        if (!doc) return;
+        
+        const allElements = doc.querySelectorAll('*');
+        allElements.forEach(el => {
+            if (el.innerText && (el.innerText.includes('Lovable') || el.innerText.includes('lovable'))) {
+                if (el.tagName !== 'BODY' && el.tagName !== 'HTML') {
+                    el.style.display = 'none';
+                }
+            }
+        });
+        
+        const footers = doc.querySelectorAll('footer, .footer, [class*="footer"]');
+        footers.forEach(footer => {
+            if (footer.innerText && footer.innerText.length < 500) {
+                footer.style.display = 'none';
+            }
+        });
+        
+        const possibleBadges = doc.querySelectorAll('[class*="badge"], [class*="credit"], [class*="made"]');
+        possibleBadges.forEach(badge => {
+            badge.style.display = 'none';
+        });
+    }
+    
+    setInterval(() => {
+        try {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            hideLovableInDocument(iframeDoc);
+        } catch(e) {}
+    }, 3000);
+</script>
+
+</body>
+</html>
